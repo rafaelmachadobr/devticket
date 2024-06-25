@@ -37,3 +37,23 @@ type Event struct {
 	Spot         []Spot
 	Tickets      []Ticket
 }
+
+func (e Event) Validade() error {
+	if e.Name == "" {
+		return ErrEventNameRequired
+	}
+
+	if e.Date.Before(time.Now()) {
+		return ErrEventDateFuture
+	}
+
+	if e.Capacity <= 0 {
+		return ErrEventCapacityZero
+	}
+
+	if e.Price < 0 {
+		return ErrEventPriceZero
+	}
+
+	return nil
+}
