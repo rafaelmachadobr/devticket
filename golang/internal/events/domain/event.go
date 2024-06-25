@@ -34,7 +34,7 @@ type Event struct {
 	Capacity     int
 	Price        float64
 	PartnerID    int
-	Spot         []Spot
+	Spots        []Spot
 	Tickets      []Ticket
 }
 
@@ -56,4 +56,15 @@ func (e Event) Validade() error {
 	}
 
 	return nil
+}
+
+func (e *Event) AddSpot(name string) (*Spot, error) {
+	spot, err := NewSpot(e, name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	e.Spots = append(e.Spots, *spot)
+	return spot, nil
 }
