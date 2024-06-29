@@ -3,7 +3,10 @@ import { Title } from "../../../../components/Title";
 import { EventModel } from "../../../../models";
 // queries
 export async function getEvent(eventId: string): Promise<EventModel> {
-  const response = await fetch(`http://localhost:8080/events/${eventId}`, {
+  const response = await fetch(`${process.env.GOLANG_API_URL}/events/${eventId}`, {
+    headers: {
+      "apikey": process.env.GOLANG_API_TOKEN as string
+    },
     cache: "no-store",
     next: {
       tags: [`events/${eventId}`],
@@ -15,12 +18,12 @@ export async function getEvent(eventId: string): Promise<EventModel> {
 
 export default async function CheckoutSuccessPage({
   params,
-}: Readonly<{
+}: {
   params: { eventId: string };
-}>) {
+}) {
   const event = await getEvent(params.eventId);
   const cookiesStore = cookies();
-  const selectedSpots = JSON.parse(cookiesStore.get("spots")?.value ?? "[]");
+  const selectedSpots = JSON.parse(cookiesStore.get("spots")?.value || "[]");
   return (
     <main className="mt-10 flex flex-col flex-wrap items-center ">
       <Title>Compra realizada com sucesso!</Title>

@@ -11,8 +11,11 @@ export async function getSpots(eventId: string): Promise<{
   spots: SpotModel[];
 }> {
   const response = await fetch(
-    `http://localhost:8080/events/${eventId}/spots`,
+    `${process.env.GOLANG_API_URL}/events/${eventId}/spots`,
     {
+      headers: {
+        "apikey": process.env.GOLANG_API_TOKEN as string
+      },
       cache: "no-store",
       next: {
         tags: [`events/${eventId}`],
@@ -25,9 +28,9 @@ export async function getSpots(eventId: string): Promise<{
 
 export default async function SpotsLayoutPage({
   params,
-}: Readonly<{
+}: {
   params: { eventId: string };
-}>) {
+}) {
   const { event, spots } = await getSpots(params.eventId);
 
   //[a, a, a, b, b,  c, d]
@@ -63,9 +66,9 @@ export default async function SpotsLayoutPage({
   });
 
   const cookieStore = cookies();
-  const selectedSpots = JSON.parse(cookieStore.get("spots")?.value ?? "[]");
+  const selectedSpots = JSON.parse(cookieStore.get("spots")?.value || "[]");
   let totalPrice = selectedSpots.length * event.price;
-  const ticketKind = cookieStore.get("ticketKind")?.value ?? "full";
+  const ticketKind = cookieStore.get("ticketKind")?.value || "full";
 
   if (ticketKind === "half") {
     totalPrice = totalPrice / 2;
