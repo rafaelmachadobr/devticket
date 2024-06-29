@@ -12,10 +12,12 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
+	_ "github.com/rafaelmachadobr/devticket/golang/docs" // Import the generated docs
 	httpHandler "github.com/rafaelmachadobr/devticket/golang/internal/events/infra/http"
 	"github.com/rafaelmachadobr/devticket/golang/internal/events/infra/repository"
 	"github.com/rafaelmachadobr/devticket/golang/internal/events/infra/service"
 	"github.com/rafaelmachadobr/devticket/golang/internal/events/usecase"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // @title Events API
@@ -45,23 +47,30 @@ func main() {
 
 	listEventsUseCase := usecase.NewListEventsUseCase(eventRepo)
 	getEventUseCase := usecase.NewGetEventUseCase(eventRepo)
+	createEventUseCase := usecase.NewCreateEventUseCase(eventRepo)
 	partnerFactory := service.NewPartnerFactory(partnerBaseURLs)
 	buyTicketsUseCase := usecase.NewBuyTicketsUseCase(eventRepo, partnerFactory)
+	createSpotsUseCase := usecase.NewCreateSpotsUseCase(eventRepo)
 	listSpotsUseCase := usecase.NewListSpotsUseCase(eventRepo)
 
 	// Handlers HTTP
 	eventsHandler := httpHandler.NewEventsHandler(
 		listEventsUseCase,
 		getEventUseCase,
+		createEventUseCase,
 		buyTicketsUseCase,
+		createSpotsUseCase,
 		listSpotsUseCase,
 	)
 
 	r := http.NewServeMux()
+	r.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 	r.HandleFunc("/events", eventsHandler.ListEvents)
 	r.HandleFunc("/events/{eventID}", eventsHandler.GetEvent)
 	r.HandleFunc("/events/{eventID}/spots", eventsHandler.ListSpots)
+	r.HandleFunc("POST /events", eventsHandler.CreateEvent)
 	r.HandleFunc("POST /checkout", eventsHandler.BuyTickets)
+	r.HandleFunc("POST /events/{eventID}/spots", eventsHandler.CreateSpots)
 
 	server := &http.Server{
 		Addr:    ":8080",
