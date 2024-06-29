@@ -12,7 +12,7 @@ services:
       - 8003:8003
       - 8004:8004
     environment:
-      KONG_DATABASE: off
+      KONG_DATABASE: "off"
       KONG_DECLARATIVE_CONFIG: /kong/declarative/kong.yaml
       KONG_PROXY_ACCESS_LOG: /dev/stdout
       KONG_ADMIN_ACCESS_LOG: /dev/stdout
