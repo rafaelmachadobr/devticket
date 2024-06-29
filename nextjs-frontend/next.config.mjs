@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  basePath: "/nextjs",
   images: {
     remotePatterns: [
       {
@@ -8,6 +9,13 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["localhost:8000"],
+    },
+  },
 };
 
 export default nextConfig;
+
+// http://localhost:8000/nextjs/events/11111/spots-layout
