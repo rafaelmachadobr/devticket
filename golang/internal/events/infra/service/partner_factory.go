@@ -16,7 +16,6 @@ func NewPartnerFactory(partnerBaseURLs map[int]string) PartnerFactory {
 
 func (f *DefaultPartnerFactory) CreatePartner(partnerID int) (Partner, error) {
 	baseURL, ok := f.partnerBaseURLs[partnerID]
-
 	if !ok {
 		return nil, fmt.Errorf("unsupported partner ID: %d", partnerID)
 	}

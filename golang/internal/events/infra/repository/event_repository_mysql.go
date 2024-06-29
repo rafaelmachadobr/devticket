@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/rafaelmachadobr/devticket/golang/internal/events/domain"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type mysqlEventRepository struct {

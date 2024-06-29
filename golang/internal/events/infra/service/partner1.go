@@ -34,27 +34,22 @@ func (p *Partner1) MakeReservation(req *ReservationRequest) ([]ReservationRespon
 	}
 
 	body, err := json.Marshal(partnerReq)
-
 	if err != nil {
 		return nil, err
 	}
 
 	url := fmt.Sprintf("%s/events/%s/reserve", p.BaseURL, req.EventID)
 	httpReq, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
-
 	if err != nil {
 		return nil, err
 	}
-
 	httpReq.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	httpResp, err := client.Do(httpReq)
-
 	if err != nil {
 		return nil, err
 	}
-
 	defer httpResp.Body.Close()
 
 	if httpResp.StatusCode != http.StatusCreated {
@@ -62,13 +57,11 @@ func (p *Partner1) MakeReservation(req *ReservationRequest) ([]ReservationRespon
 	}
 
 	var partnerResp []Partner1ReservationResponse
-
 	if err := json.NewDecoder(httpResp.Body).Decode(&partnerResp); err != nil {
 		return nil, err
 	}
 
 	responses := make([]ReservationResponse, len(partnerResp))
-
 	for i, r := range partnerResp {
 		responses[i] = ReservationResponse{
 			ID:     r.ID,
